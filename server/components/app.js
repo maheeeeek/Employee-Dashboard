@@ -44,7 +44,19 @@ app.use('/api/auth', authRoutes);
 app.use('/api/employees', employeeRoutes);
 
 // Health & Error
+
 app.get('/health', (req, res) => res.json({ ok: true, uptime: process.uptime() }));
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Employee Management API',
+    status: 'running',
+    endpoints: {
+      health: '/health',
+      auth: '/api/auth',
+      employees: '/api/employees'
+    }
+  });
+});
 app.use(errorHandler);
 
 module.exports = app;
