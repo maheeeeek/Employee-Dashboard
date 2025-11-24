@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/DashBoard';
 
 export default function App() {
   const [authed, setAuthed] = useState(false);
