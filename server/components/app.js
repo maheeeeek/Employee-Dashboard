@@ -1,4 +1,3 @@
-
 const express = require('express');
 require('express-async-errors');
 const cors = require('cors');
@@ -30,21 +29,34 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(morgan('dev'));
 app.use(cookieParser());
 
-// CORS
-const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
+// CORS - ⬇️ UPDATED SECTION
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://employee-dashboard-9jvq.vercel.app',
+  process.env.CLIENT_URL
+].filter(Boolean);
+
 app.use(cors({
-  origin: CLIENT_URL,
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], 
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+// ⬆️ END OF UPDATED SECTION
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/employees', employeeRoutes);
 
 // Health & Error
-
 app.get('/health', (req, res) => res.json({ ok: true, uptime: process.uptime() }));
 app.get('/', (req, res) => {
   res.json({ 
