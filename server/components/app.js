@@ -33,6 +33,7 @@ app.use(cookieParser());
 const allowedOrigins = [
   'http://localhost:5173',
   'https://employee-dashboard-9jvq.vercel.app',
+  'https://employee-dashboard-3jb7.onrender.com',  // ← Added this line
   process.env.CLIENT_URL
 ].filter(Boolean);
 
