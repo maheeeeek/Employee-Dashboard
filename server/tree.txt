@@ -1,0 +1,13 @@
+
+C:\Users\mahek\Desktop\Employee-Dashboard\server
+├── components
+├── node_modules
+├── package-lock.json
+├── package.json
+└── tree.txt
+
+directory: 2 file: 3
+
+
+
+[2K[1G

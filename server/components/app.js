@@ -1,0 +1,50 @@
+
+const express = require('express');
+require('express-async-errors');
+const cors = require('cors');
+const helmet = require('helmet');
+const hpp = require('hpp');
+const mongoSanitize = require('express-mongo-sanitize');
+const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
+const apiLimiter = require('./middleware/rateLimit');
+
+const authRoutes = require('./routes/auth.routes');
+const employeeRoutes = require('./routes/employee.routes');
+const errorHandler = require('./middleware/errorHandler');
+
+const app = express();
+
+// Security
+app.disable('x-powered-by');
+app.use(helmet());
+app.use(hpp());
+app.use(mongoSanitize());
+app.use(apiLimiter);
+
+// Parsing
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
+// Logging & Cookies
+app.use(morgan('dev'));
+app.use(cookieParser());
+
+// CORS
+const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
+app.use(cors({
+  origin: CLIENT_URL,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], 
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/employees', employeeRoutes);
+
+// Health & Error
+app.get('/health', (req, res) => res.json({ ok: true, uptime: process.uptime() }));
+app.use(errorHandler);
+
+module.exports = app;
